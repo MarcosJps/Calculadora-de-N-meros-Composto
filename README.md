@@ -19,7 +19,7 @@ Abaixo estão exemplos de como a calculadora processa as operações (usando a n
 - Segundo número: `1 + 2i`
 
 **Resultado:**
-```text
+
 (3 + 4i) + (1 + 2i) = 4 + 6i
 
 ### 2. Subtração ➖
