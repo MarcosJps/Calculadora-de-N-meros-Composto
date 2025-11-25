@@ -1,51 +1,45 @@
-# Calculadora de Números Complexos 
+# README - Calculadora de Números Complexos (Unifacs)
 
-Uma calculadora completa para expressões com números complexos, desenvolvida em Python usando Tkinter e avaliação segura via AST.
+Este projeto é uma calculadora de números complexos feita em Python, permitindo que o usuário some, subtraia, multiplique e divida números complexos sem utilizar bibliotecas prontas de números complexos.
 
-## Funcionalidades
+---
 
-### Motor Matemático
-- Soma, subtração, multiplicação, divisão, potência.
-- Funções: sqrt(z), conjugate(z).
-- Avaliação segura via ast.parse.
-- Conversão automática da unidade imaginária j → __j__.
+## 📌 Funcionalidades
+- Soma de números complexos  
+- Subtração de números complexos  
+- Multiplicação de números complexos  
+- Divisão de números complexos  
+- Entrada simples no formato:  
+  ```
+  a + bi
+  ```
 
-### Interface Gráfica
-- Campo de entrada de expressão.
-- Botão Calcular.
-- Campo de saída somente leitura.
-- Tratamento de erros via messagebox.
+---
 
-## Exemplos para Testar
+## ▶️ Como Executar
 
-### Operações básicas
-3+2j + 1+5j → 4+7j
+### **1. Instale o Python**
+Se ainda não tiver, baixe o Python no site oficial.
 
-10-4j - (3+1j) → 7-5j
+### **2. Salve o código em um arquivo**
+Crie um arquivo com o nome:
 
-### Multiplicação / Divisão
-(3+4j) * (2-j) → 10+5j  
-(6+2j) / (1-j) → 2+4j
+```
+calculadora_complexa.py
+```
 
-### Potência
-(1+2j)**3 → -11+2j
+Cole nele o código da calculadora.
 
-### Funções especiais
-sqrt(5j) → 1.5811+1.5811j  
-conjugate(3-4j) → 3+4j
+### **3. Execute o programa**
+Abra o terminal (CMD ou PowerShell) na pasta onde o arquivo está salvo e rode:
 
-### Extras
-2j * (1 + j) → -2+2j  
-sqrt(4+9j)  
-(2+3j) / (1+1j)  
-(3j) * (4j)
+```
+python calculadora_complexa.py
+```
 
-## Estrutura
-calculadora.py  
-├── Classe Complexo  
-├── Parser de números complexos  
-├── CalculadoraComplexa  
-└── Interface Tkinter
+O programa vai pedir dois números complexos e depois a operação desejada.
 
-## Universidade Salvador – UNIFACS
-Projeto acadêmico desenvolvido em Python.
+---
+
+## 🏛 Universidade
+Este projeto foi desenvolvido para fins educacionais — **UNIFACS**.
