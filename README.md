@@ -30,7 +30,7 @@ Abaixo estão exemplos de como a calculadora processa as operações (usando a n
 **Resultado:**
 (10 + 5i) - (2 + 3i) = 8 + 2i
 
-3. Multiplicação ✖️
+### 3. Multiplicação ✖️
 Entrada:
 
 Primeiro número: 2 + 3i
@@ -41,7 +41,7 @@ Resultado:
 
 (2 + 3i)(4 + 1i) = 5 + 14i
 
-Divisão ➗
+### 4.Divisão ➗
 Entrada:
 
 Primeiro número: 5 + 6i
