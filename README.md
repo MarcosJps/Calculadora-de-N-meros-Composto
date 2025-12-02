@@ -59,15 +59,6 @@ Valor para 'Z' (ex: 3+2j): 5+1j
 
 ---
 
-## 📘 Comandos Úteis
-
-* `vars` — lista variáveis armazenadas
-* `clear` — limpa as variáveis
-* `help` — mostra a ajuda
-* `sair` / `exit` / `quit` — encerra a calculadora
-
----
-
 ## 🛠️ Detalhes Técnicos
 
 * O parser substitui unidades imaginárias (sufixo `j`) por um token interno `*__j__` para compatibilizar com a AST.
