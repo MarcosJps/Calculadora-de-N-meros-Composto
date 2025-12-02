@@ -40,19 +40,19 @@ cd <seu-repo>
 python a3br.py
 ```
 
-3. No prompt `calc>` digite expressões. Exemplos:
+3. No prompt digite expressões. Exemplos:
 
 ```
-calc> 3+2j
+ 3+2j
 = 3.0+2.0j
 
-calc> (1+1j)*(1-1j)
+ (1+1j)*(1-1j)
 = 2.0
 
-calc> sqrt(-4)
+(-4)
 = 2.0j
 
-calc> 2*Z
+ 2*Z
 Valor para 'Z' (ex: 3+2j): 5+1j
 = 10.0+2.0j
 ```
