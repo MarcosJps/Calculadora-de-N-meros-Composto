@@ -1,9 +1,8 @@
 import ast
 import math
 import tkinter as tk
-from tkinter import messagebox
 
-IMAGINARY_UNIT_NAME = "__j__"
+IMAGINARY_UNIT_NAME = "j"
 
 class Complexo:
     def __init__(self, real=0, imag=0):
@@ -60,37 +59,66 @@ class Complexo:
             return f"{self.imag}j"
         return f"{self.real}{sinal}{self.imag}j"
 
-def parse_complexo(texto):
-    texto = texto.replace(" ", "")
-    if "j" not in texto:
-        return Complexo(float(texto), 0)
-    texto_sem_j = texto.replace("j", "")
-    if all(c not in texto_sem_j for c in "+-") or (texto_sem_j.startswith(('-', '+')) and all(c not in texto_sem_j[1:] for c in "+-")):
-        try:
-            return Complexo(0, float(texto_sem_j))
-        except ValueError:
-            pass
-    for i in range(len(texto_sem_j) - 1, -1, -1):
-        if texto_sem_j[i] in "+-" and i != 0 and (texto_sem_j[i-1] not in ('e', 'E')):
-            real = texto_sem_j[:i]
-            imag = texto_sem_j[i:]
-            return Complexo(float(real), float(imag))
-    return Complexo(0, float(texto_sem_j))
+
+# - ÁRVORE LISP -
+def ast_to_lisp(node):
+    if isinstance(node, ast.BinOp):
+        op = {
+            ast.Add: "+",
+            ast.Sub: "-",
+            ast.Mult: "*",
+            ast.Div: "/",
+            ast.Pow: "^"
+        }.get(type(node.op), "?")
+        return f"({op} {ast_to_lisp(node.left)} {ast_to_lisp(node.right)})"
+
+    elif isinstance(node, ast.UnaryOp):
+        op = "-" if isinstance(node.op, ast.USub) else "+"
+        return f"({op} {ast_to_lisp(node.operand)})"
+
+    elif isinstance(node, ast.Call):
+        return f"({node.func.id} {ast_to_lisp(node.args[0])})"
+
+    elif isinstance(node, ast.Name):
+        return node.id
+
+    elif isinstance(node, ast.Constant):
+        return str(node.value)
+
+    return "?"
+
 
 class CalculadoraComplexa:
     def __init__(self):
         self.vars = {}
         self.funcoes = {
             "sqrt": lambda z: z.sqrt(),
-            "conjugate": lambda z: z.conjugate()
+            "conjugate": lambda z: z.conjugate(),
+            "con": lambda z: z.conjugate()
         }
 
     def _eval(self, no):
-        if isinstance(no, ast.Constant):
+
+        if isinstance(no, ast.Name):
+            nome = no.id
+            if nome == IMAGINARY_UNIT_NAME:
+                return Complexo(0, 1)
+            if nome in self.funcoes:
+                return self.funcoes[nome]
+            if nome not in self.vars:
+                raise NameError(f"Variável indefinida: {nome}")
+            return self.vars[nome]
+
+        elif isinstance(no, ast.Call):
+            nome = no.func.id
+            if nome not in self.funcoes:
+                raise NameError(f"Função não permitida: {nome}")
+            args = [self._eval(a) for a in no.args]
+            return self.funcoes[nome](*args)
+
+        elif isinstance(no, ast.Constant):
             if isinstance(no.value, (int, float)):
                 return Complexo(no.value, 0)
-            else:
-                raise TypeError("Constante inválida.")
 
         elif isinstance(no, ast.BinOp):
             l = self._eval(no.left)
@@ -106,58 +134,61 @@ class CalculadoraComplexa:
             if isinstance(no.op, ast.USub): return Complexo(-v.real, -v.imag)
             if isinstance(no.op, ast.UAdd): return v
 
-        elif isinstance(no, ast.Name):
-            nome = no.id
-            if nome == IMAGINARY_UNIT_NAME:
-                return Complexo(0, 1)
-            if nome not in self.vars:
-                raise NameError(f"Variável indefinida: {nome}")
-            return self.vars[nome]
-
-        elif isinstance(no, ast.Call):
-            nome = no.func.id
-            if nome not in self.funcoes:
-                raise NameError(f"Função não permitida: {nome}")
-            if len(no.args) != 1:
-                raise TypeError("A função requer 1 argumento.")
-            args = [self._eval(a) for a in no.args]
-            return self.funcoes[nome](*args)
-
         raise TypeError("Operação inválida.")
 
     def executar(self, exp):
         try:
-            exp_processada = exp.replace(" ", "")
-            exp_processada = exp_processada.replace("j", f"*{IMAGINARY_UNIT_NAME}")
-            if exp_processada.startswith(f"*{IMAGINARY_UNIT_NAME}"):
-                exp_processada = "1" + exp_processada
-            exp_processada = exp_processada.replace(f"**{IMAGINARY_UNIT_NAME}", f"*{IMAGINARY_UNIT_NAME}")
-            arv = ast.parse(exp_processada, mode="eval")
-            return self._eval(arv.body)
+            exp_proc = exp.replace(" ", "").replace("j", f"*{IMAGINARY_UNIT_NAME}")
+
+            if exp_proc.startswith(f"*{IMAGINARY_UNIT_NAME}"):
+                exp_proc = "1" + exp_proc
+
+            arv = ast.parse(exp_proc, mode="eval")
+            resultado = self._eval(arv.body)
+            lisp = ast_to_lisp(arv.body)
+
+            return resultado, lisp
+
         except Exception as e:
-            return f"Erro: {e}"
+            return f"Erro: {e}", ""
+
 
 calc = CalculadoraComplexa()
 
+
+#  INTERFACE 
 def calcular():
     exp = entrada.get()
-    resultado = calc.executar(exp)
-    saida.config(state="normal")
-    saida.delete(0, tk.END)
-    saida.insert(0, str(resultado))
-    saida.config(state="readonly")
+    resultado, lisp = calc.executar(exp)
+
+    saida_result.config(state="normal")
+    saida_lisp.config(state="normal")
+
+    saida_result.delete(0, tk.END)
+    saida_lisp.delete(0, tk.END)
+
+    saida_result.insert(0, str(resultado))
+    saida_lisp.insert(0, lisp)
+
+    saida_result.config(state="readonly")
+    saida_lisp.config(state="readonly")
+
 
 janela = tk.Tk()
-janela.title("Calculadora Complexa")
+janela.title("Calculadora Complexa com Árvore LISP")
 
 tk.Label(janela, text="Expressão:").grid(row=0, column=0)
-entrada = tk.Entry(janela, width=40)
+entrada = tk.Entry(janela, width=50)
 entrada.grid(row=0, column=1)
 
 tk.Button(janela, text="Calcular", command=calcular).grid(row=1, column=0, columnspan=2)
 
 tk.Label(janela, text="Resultado:").grid(row=2, column=0)
-saida = tk.Entry(janela, width=40, state="readonly")
-saida.grid(row=2, column=1)
+saida_result = tk.Entry(janela, width=50, state="readonly")
+saida_result.grid(row=2, column=1)
+
+tk.Label(janela, text="Árvore LISP:").grid(row=3, column=0)
+saida_lisp = tk.Entry(janela, width=50, state="readonly")
+saida_lisp.grid(row=3, column=1)
 
 janela.mainloop()
