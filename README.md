@@ -1,4 +1,4 @@
-# 🧮 Calculadora de Números Complexos (AST Interpreter)
+# 🧮 Calculadora de Números Complexos 
 
 Uma calculadora de números complexos criada em Python, capaz de interpretar
 expressões matemáticas usando análise sintática (AST).  
