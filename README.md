@@ -33,14 +33,10 @@ python calculadora_complexa.py
 
 🧪 Exemplos para testar
 Expressão	Resultado
-3 + 2i + 5 - i	   8 + 1i
-(2 + 3i) * (1 - 4i)	   14 - 5i
-(5 - 2i) / (1 + i)	   1.5 - 3.5i
-con(7 - 9i)	   7 + 9i
-(2 + i) ** 4	   -7 + 24i
-(10 + 8i) - (3 - 6i)	   7 + 14i
+3 + 2i + 5 - i	=  8 + 1i
+(2 + 3i) * (1 - 4i)	= 14 - 5i
+(5 - 2i) / (1 + i) = 1.5 - 3.5i
+con(7 - 9i)	= 7 + 9i
+(2 + i) ** 4	= -7 + 24i
+(10 + 8i) - (3 - 6i) = 7 + 14i 
 
-📂 Estrutura do projeto
-📦 Calculadora Complexa
- ┣ 📜 calculadora_complexa.py
- ┣ 📜 README.md
