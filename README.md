@@ -83,20 +83,3 @@ Valor para 'Z' (ex: 3+2j): 5+1j
 3. Commit suas mudanças: `git commit -am 'Adiciona X'`.
 4. Push: `git push origin feat/minha-melhoria`.
 5. Abra um Pull Request.
-
----
-
-## 📄 Licença
-
-Escolha uma licença adequada ao seu repositório (MIT, GPL, Apache...).
-
----
-
-## 📬 Contato
-
-Se quiser, posso gerar também:
-
-* Um `requirements.txt` (se necessário);
-* Testes automatizados (ex.: `pytest`);
-* Um pacote pip instalável;
-* Um arquivo de exemplo `examples/` com usos prontos.
