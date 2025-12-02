@@ -1,76 +1,138 @@
-# 🧮 Calculadora de Números Complexos 
+🧮 Calculadora de Números Complexos com Árvore LISP
 
-Uma calculadora interativa de linha de comando (CLI) em Python que interpreta e resolve expressões envolvendo números complexos usando `ast` para parse seguro (evita `eval`).
+Uma calculadora interativa em Python, agora com interface gráfica (Tkinter), capaz de interpretar expressões matemáticas envolvendo números complexos usando AST para análise segura e geração automática da Árvore LISP da expressão.
 
-**Funcionalidades**
+✨ Funcionalidades
 
-* Operações aritméticas com complexos: `+`, `-`, `*`, `/`, `**`
-* Funções nativas: `sqrt(z)`, `conjugate(z)`
-* Variáveis dinâmicas: caso uma variável apareça na expressão, a calculadora pede o valor ao usuário
-* Suporte à notação `j` (ex: `3+2j`)
+Operações com números complexos: +, -, *, /, **
 
----
+Suporte às funções:
 
-## Arquivos
+sqrt(z)
 
-* `a3br.py` — implementa a calculadora e o REPL (prompt `calc>`).
+conjugate(z)
 
----
+con(z) (atalho para o conjugado)
 
-## ⚙️ Pré-requisitos
+Processamento manual de números complexos (não usa cmath)
 
-* Python 3.x
+Interpretador próprio usando AST (evita eval)
 
-> Não há dependências externas além da biblioteca padrão.
+Exibição automática da Árvore Sintática em formato LISP
 
----
+Interface gráfica completa com Tkinter
 
-## 🚀 Como Executar
+Aceita notação natural de complexo: 3+2j, -4j, 2-7j, etc.
 
-1. Clone o repositório ou baixe os arquivos.
+📁 Arquivos
 
-```bash
+a3br.py — contém toda a calculadora, interpretação da expressão, geração da árvore LISP e interface gráfica Tkinter.
+
+⚙️ Pré-Requisitos
+
+Python 3.x instalado
+
+Não usa nenhuma biblioteca externa além da biblioteca padrão.
+
+🚀 Como Executar
+
+Baixe ou clone o projeto:
+
 git clone <seu-repo.git>
 cd <seu-repo>
-```
 
-2. Execute o script:
 
-```bash
+Execute o script:
+
 python a3br.py
-```
 
-3. No prompt digite expressões. Exemplos:
 
-```
- 3+2j
-= 3.0+2.0j
+A interface gráfica será aberta.
+Basta digitar uma expressão e clicar Calcular.
 
- (1+1j)*(1-1j)
-= 2.0
+🧪 Exemplos de uso
+Entrada:
+3+2j
 
-(-4)
-= 2.0j
 
- 2*Z
-Valor para 'Z' (ex: 3+2j): 5+1j
-= 10.0+2.0j
-```
+Saída:
 
----
+Resultado: 3.0+2.0j
+Árvore LISP: (+ 3 2*j)
 
-## 🛠️ Detalhes Técnicos
+Entrada:
+(1+1j)*(1-1j)
 
-* O parser substitui unidades imaginárias (sufixo `j`) por um token interno `*__j__` para compatibilizar com a AST.
-* A avaliação percorre a AST e usa a classe `Complexo` para todas as operações, garantindo controle sobre operações e permitindo validações.
-* Chamadas de função são limitadas a `sqrt` e `conjugate` por segurança.
 
----
+Saída:
 
-## 🤝 Contribuição
+Resultado: 2.0
+Árvore LISP: (* (+ 1 1*j) (- 1 1*j))
 
-1. Faça um fork do repositório.
-2. Crie uma branch: `git checkout -b feat/minha-melhoria`.
-3. Commit suas mudanças: `git commit -am 'Adiciona X'`.
-4. Push: `git push origin feat/minha-melhoria`.
-5. Abra um Pull Request.
+Entrada:
+conjugate(5-3j)
+
+
+Saída:
+
+Resultado: 5.0+3.0j
+Árvore LISP: (conjugate (- 5 (* 3 j)))
+
+Entrada:
+sqrt(9-16j)
+
+
+Saída:
+
+Resultado: 4.0-2.0j
+Árvore LISP: (sqrt (- 9 (* 16 j)))
+
+🛠️ Como o sistema funciona internamente
+🔹 Processamento da expressão
+
+A expressão digitada passa por:
+
+Limpeza de espaços
+
+Conversão de j para *j (para a AST interpretar corretamente)
+
+Geração da árvore AST do Python
+
+Conversão paralela para Árvore LISP
+
+Avaliação usando a classe Complexo
+
+🔹 Avaliação segura
+
+Somente os operadores permitidos e funções da calculadora podem ser usados.
+
+🔹 Classe Complexo
+
+Implementa manualmente:
+
+Soma
+
+Subtração
+
+Multiplicação
+
+Divisão
+
+Potência inteira
+
+Conjugado
+
+Raiz quadrada
+
+🔹 Árvore LISP
+
+A expressão é convertida para uma estrutura do tipo:
+
+(op esquerda direita)
+
+
+Exemplo:
+
+( * (+ 2 j) (^ 3 2) )
+
+🤝 Contribuição
