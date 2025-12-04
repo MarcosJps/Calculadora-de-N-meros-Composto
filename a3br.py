@@ -1,6 +1,5 @@
 import ast
 import math
-import tkinter as tk
 
 IMAGINARY_UNIT_NAME = "j"
 
@@ -10,17 +9,21 @@ class Complexo:
         self.imag = float(imag)
 
     def __add__(self, o):
+        if isinstance(o, (int, float)): o = Complexo(o)
         return Complexo(self.real + o.real, self.imag + o.imag)
 
     def __sub__(self, o):
+        if isinstance(o, (int, float)): o = Complexo(o)
         return Complexo(self.real - o.real, self.imag - o.imag)
 
     def __mul__(self, o):
+        if isinstance(o, (int, float)): o = Complexo(o)
         r = self.real * o.real - self.imag * o.imag
         i = self.real * o.imag + self.imag * o.real
         return Complexo(r, i)
 
     def __truediv__(self, o):
+        if isinstance(o, (int, float)): o = Complexo(o)
         denom = o.real**2 + o.imag**2
         if denom == 0:
             raise ZeroDivisionError("Divisão por zero.")
@@ -29,6 +32,7 @@ class Complexo:
         return Complexo(r, i)
 
     def __pow__(self, n):
+        if isinstance(n, (int, float)): n = Complexo(n)
         if not n.imag == 0 or not n.real == int(n.real):
             raise ValueError("Potência só aceita expoente inteiro.")
         result = Complexo(1, 0)
@@ -98,16 +102,15 @@ class CalculadoraComplexa:
         }
 
     def _eval(self, no):
-
         if isinstance(no, ast.Name):
             nome = no.id
             if nome == IMAGINARY_UNIT_NAME:
                 return Complexo(0, 1)
             if nome in self.funcoes:
                 return self.funcoes[nome]
-            if nome not in self.vars:
-                raise NameError(f"Variável indefinida: {nome}")
-            return self.vars[nome]
+            if nome in self.vars:
+                return self.vars[nome]
+            raise NameError(f"Variável indefinida: {nome}")
 
         elif isinstance(no, ast.Call):
             nome = no.func.id
@@ -127,6 +130,69 @@ class CalculadoraComplexa:
             if isinstance(no.op, ast.Sub): return l - r
             if isinstance(no.op, ast.Mult): return l * r
             if isinstance(no.op, ast.Div): return l / r
+            if isinstance(no.op, ast.Pow): return l ** r
+
+        elif isinstance(no, ast.UnaryOp):
+            v = self._eval(no.operand)
+            if isinstance(no.op, ast.USub): return Complexo(-v.real, -v.imag)
+            if isinstance(no.op, ast.UAdd): return v
+
+        raise TypeError("Operação inválida.")
+
+    def definir_variaveis_desconhecidas(self, node_tree):
+        for node in ast.walk(node_tree):
+            if isinstance(node, ast.Name):
+                nome = node.id
+                if nome == IMAGINARY_UNIT_NAME or nome in self.funcoes or nome in self.vars:
+                    continue
+                
+                print(f"A variável '{nome}' não tem valor.")
+                valor_str = input(f"Digite o valor para '{nome}': ")
+                
+                valor_calculado, _ = self.executar(valor_str, is_sub_call=True)
+                
+                if isinstance(valor_calculado, str) and valor_calculado.startswith("Erro"):
+                    raise ValueError(f"Valor inválido para {nome}")
+                    
+                self.vars[nome] = valor_calculado
+
+    def executar(self, exp, is_sub_call=False):
+        try:
+            exp_proc = exp.replace(" ", "").replace("j", f"*{IMAGINARY_UNIT_NAME}")
+
+            if exp_proc.startswith(f"*{IMAGINARY_UNIT_NAME}"):
+                exp_proc = "1" + exp_proc
+
+            arv = ast.parse(exp_proc, mode="eval")
+            
+            if not is_sub_call:
+                self.definir_variaveis_desconhecidas(arv.body)
+
+            resultado = self._eval(arv.body)
+            lisp = ast_to_lisp(arv.body) if not is_sub_call else ""
+
+            return resultado, lisp
+
+        except Exception as e:
+            return f"Erro: {e}", ""
+
+
+# INTERFACE
+if __name__ == "__main__":
+    calc = CalculadoraComplexa()
+    
+    while True:
+        entrada = input("\nExpressão: ")
+        if entrada.lower() in ["sair", "exit"]:
+            break
+        
+        if not entrada.strip():
+            continue
+
+        resultado, lisp = calc.executar(entrada)
+        
+        print(f"Resultado: {resultado}")
+        print(f"Árvore LISP: {lisp}")
             if isinstance(no.op, ast.Pow): return l ** r
 
         elif isinstance(no, ast.UnaryOp):
@@ -192,3 +258,4 @@ saida_lisp = tk.Entry(janela, width=50, state="readonly")
 saida_lisp.grid(row=3, column=1)
 
 janela.mainloop()
+
